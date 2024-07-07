@@ -88,3 +88,6 @@ body {
 .center {
   text-align: center;
 }
+.error-message {
+  color:rgb(180, 112, 112)
+}

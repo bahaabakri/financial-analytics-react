@@ -1,7 +1,9 @@
-import { calculateInvestmentResults } from "../util/investment"
+import { calculateInvestmentResults, formatter } from "../util/investment"
 
 export default function AnalyticsTable({filter}) {
-
+    const result =  calculateInvestmentResults(filter)
+    const initialInvestment = (result && result.length > 0) ?
+    result[0].valueEndOfYear - result[0].interest - result[0].annualInvestment : 0
     return(
         <table id="result">
             <thead>
@@ -14,18 +16,17 @@ export default function AnalyticsTable({filter}) {
                 </tr>
             </thead>
             <tbody>
-                {calculateInvestmentResults(
-                    filter.initialInvestment,
-                    filter.annualInvestment,
-                    filter.expectedReturn,
-                    filter.duration
-                ).map((el, index) => {
-                    <tr key={index}>
+                {result.map((el, index) => {
+                    const totalInterest = el.valueEndOfYear
+                    - el.annualInvestment * el.year
+                    - initialInvestment
+                    const investedCapital = el.valueEndOfYear - totalInterest
+                    return <tr key={index}>
                         <td>{el.year}</td>
-                        <td>{el.valueEndOfYear}</td>
-                        <td>{el.interest}</td>
-                        <td>{el.interest}</td>
-                        <td>{el.valueEndOfYear}</td>
+                        <td>{formatter.format(el.valueEndOfYear)}</td>
+                        <td>{formatter.format(el.interest)}</td>
+                        <td>{formatter.format(totalInterest)}</td>
+                        <td>{formatter.format(investedCapital)}</td>
                     </tr>
                 })}
             </tbody>
